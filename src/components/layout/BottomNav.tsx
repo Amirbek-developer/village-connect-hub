@@ -18,7 +18,7 @@ export function BottomNav() {
     <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 pb-[env(safe-area-inset-bottom)]">
       <div className="grid grid-cols-5 items-end">
         {ITEMS.slice(0, 2).map((it) => (
-          <NavItem key={it.to} {...it} active={pathname === it.to} t={t} />
+          <NavItem key={it.to} to={it.to} icon={it.icon} labelKey={it.key} active={pathname === it.to} t={t} />
         ))}
         <div className="flex items-start justify-center -mt-5">
           <Link
@@ -30,14 +30,14 @@ export function BottomNav() {
           </Link>
         </div>
         {ITEMS.slice(2).map((it) => (
-          <NavItem key={it.to} {...it} active={pathname === it.to} t={t} />
+          <NavItem key={it.to} to={it.to} icon={it.icon} labelKey={it.key} active={pathname === it.to} t={t} />
         ))}
       </div>
     </nav>
   );
 }
 
-function NavItem({ to, icon: Icon, key: k, active, t }: { to: string; icon: typeof Home; key: string; active: boolean; t: (k: string) => string }) {
+function NavItem({ to, icon: Icon, labelKey, active, t }: { to: string; icon: typeof Home; labelKey: string; active: boolean; t: (k: string) => string }) {
   return (
     <Link
       to={to}
@@ -47,7 +47,7 @@ function NavItem({ to, icon: Icon, key: k, active, t }: { to: string; icon: type
       )}
     >
       <Icon className="h-5 w-5" />
-      <span className="truncate max-w-full px-1">{t(k)}</span>
+      <span className="truncate max-w-full px-1">{t(labelKey)}</span>
     </Link>
   );
 }
