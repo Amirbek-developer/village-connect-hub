@@ -14,16 +14,463 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      announcements: {
+        Row: {
+          author_id: string | null
+          content: string
+          created_at: string
+          id: string
+          images: string[]
+          is_pinned: boolean
+          is_urgent: boolean
+          likes: number
+          title: string
+          type: Database["public"]["Enums"]["announcement_type"]
+          updated_at: string
+          views: number
+          village_id: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          images?: string[]
+          is_pinned?: boolean
+          is_urgent?: boolean
+          likes?: number
+          title: string
+          type?: Database["public"]["Enums"]["announcement_type"]
+          updated_at?: string
+          views?: number
+          village_id?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          images?: string[]
+          is_pinned?: boolean
+          is_urgent?: boolean
+          likes?: number
+          title?: string
+          type?: Database["public"]["Enums"]["announcement_type"]
+          updated_at?: string
+          views?: number
+          village_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_village_id_fkey"
+            columns: ["village_id"]
+            isOneToOne: false
+            referencedRelation: "villages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_posts: {
+        Row: {
+          author_id: string
+          category: string
+          comment_count: number
+          content: string
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          upvotes: number
+          views: number
+          village_id: string | null
+        }
+        Insert: {
+          author_id: string
+          category?: string
+          comment_count?: number
+          content: string
+          created_at?: string
+          id?: string
+          title: string
+          updated_at?: string
+          upvotes?: number
+          views?: number
+          village_id?: string | null
+        }
+        Update: {
+          author_id?: string
+          category?: string
+          comment_count?: number
+          content?: string
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          upvotes?: number
+          views?: number
+          village_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_posts_village_id_fkey"
+            columns: ["village_id"]
+            isOneToOne: false
+            referencedRelation: "villages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      issues: {
+        Row: {
+          address: string | null
+          created_at: string
+          description: string
+          id: string
+          images: string[]
+          latitude: number | null
+          longitude: number | null
+          reporter_id: string | null
+          status: Database["public"]["Enums"]["issue_status"]
+          title: string
+          type: Database["public"]["Enums"]["issue_type"]
+          updated_at: string
+          upvotes: number
+          village_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          images?: string[]
+          latitude?: number | null
+          longitude?: number | null
+          reporter_id?: string | null
+          status?: Database["public"]["Enums"]["issue_status"]
+          title: string
+          type: Database["public"]["Enums"]["issue_type"]
+          updated_at?: string
+          upvotes?: number
+          village_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          images?: string[]
+          latitude?: number | null
+          longitude?: number | null
+          reporter_id?: string | null
+          status?: Database["public"]["Enums"]["issue_status"]
+          title?: string
+          type?: Database["public"]["Enums"]["issue_type"]
+          updated_at?: string
+          upvotes?: number
+          village_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issues_village_id_fkey"
+            columns: ["village_id"]
+            isOneToOne: false
+            referencedRelation: "villages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          is_read: boolean
+          link: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          category: string
+          contact_phone: string | null
+          created_at: string
+          description: string
+          id: string
+          images: string[]
+          is_barter: boolean
+          price: number | null
+          seller_id: string
+          status: Database["public"]["Enums"]["product_status"]
+          title: string
+          unit: string | null
+          updated_at: string
+          views: number
+          village_id: string | null
+        }
+        Insert: {
+          category: string
+          contact_phone?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          images?: string[]
+          is_barter?: boolean
+          price?: number | null
+          seller_id: string
+          status?: Database["public"]["Enums"]["product_status"]
+          title: string
+          unit?: string | null
+          updated_at?: string
+          views?: number
+          village_id?: string | null
+        }
+        Update: {
+          category?: string
+          contact_phone?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          images?: string[]
+          is_barter?: boolean
+          price?: number | null
+          seller_id?: string
+          status?: Database["public"]["Enums"]["product_status"]
+          title?: string
+          unit?: string | null
+          updated_at?: string
+          views?: number
+          village_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_village_id_fkey"
+            columns: ["village_id"]
+            isOneToOne: false
+            referencedRelation: "villages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          id: string
+          language: string
+          name: string
+          phone: string | null
+          updated_at: string
+          verified: boolean
+          village_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id: string
+          language?: string
+          name?: string
+          phone?: string | null
+          updated_at?: string
+          verified?: boolean
+          village_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id?: string
+          language?: string
+          name?: string
+          phone?: string | null
+          updated_at?: string
+          verified?: boolean
+          village_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_village_id_fkey"
+            columns: ["village_id"]
+            isOneToOne: false
+            referencedRelation: "villages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          category: string
+          contact_phone: string | null
+          created_at: string
+          description: string
+          experience_years: number | null
+          id: string
+          images: string[]
+          is_verified: boolean
+          price_from: number | null
+          price_to: number | null
+          price_type: Database["public"]["Enums"]["price_type"]
+          provider_id: string
+          rating: number
+          review_count: number
+          title: string
+          updated_at: string
+          village_id: string | null
+        }
+        Insert: {
+          category: string
+          contact_phone?: string | null
+          created_at?: string
+          description: string
+          experience_years?: number | null
+          id?: string
+          images?: string[]
+          is_verified?: boolean
+          price_from?: number | null
+          price_to?: number | null
+          price_type?: Database["public"]["Enums"]["price_type"]
+          provider_id: string
+          rating?: number
+          review_count?: number
+          title: string
+          updated_at?: string
+          village_id?: string | null
+        }
+        Update: {
+          category?: string
+          contact_phone?: string | null
+          created_at?: string
+          description?: string
+          experience_years?: number | null
+          id?: string
+          images?: string[]
+          is_verified?: boolean
+          price_from?: number | null
+          price_to?: number | null
+          price_type?: Database["public"]["Enums"]["price_type"]
+          provider_id?: string
+          rating?: number
+          review_count?: number
+          title?: string
+          updated_at?: string
+          village_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_village_id_fkey"
+            columns: ["village_id"]
+            isOneToOne: false
+            referencedRelation: "villages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      villages: {
+        Row: {
+          created_at: string
+          district: string
+          id: string
+          name: string
+          region: string
+        }
+        Insert: {
+          created_at?: string
+          district: string
+          id?: string
+          name: string
+          region: string
+        }
+        Update: {
+          created_at?: string
+          district?: string
+          id?: string
+          name?: string
+          region?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      announcement_type: "official" | "public" | "event" | "urgent"
+      app_role:
+        | "super_admin"
+        | "village_admin"
+        | "moderator"
+        | "verified"
+        | "user"
+      issue_status:
+        | "pending"
+        | "reviewing"
+        | "in_progress"
+        | "resolved"
+        | "rejected"
+      issue_type:
+        | "road"
+        | "electricity"
+        | "water"
+        | "gas"
+        | "garbage"
+        | "lighting"
+        | "other"
+      price_type: "hourly" | "project" | "negotiable" | "fixed"
+      product_status: "active" | "sold" | "reserved" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +597,33 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      announcement_type: ["official", "public", "event", "urgent"],
+      app_role: [
+        "super_admin",
+        "village_admin",
+        "moderator",
+        "verified",
+        "user",
+      ],
+      issue_status: [
+        "pending",
+        "reviewing",
+        "in_progress",
+        "resolved",
+        "rejected",
+      ],
+      issue_type: [
+        "road",
+        "electricity",
+        "water",
+        "gas",
+        "garbage",
+        "lighting",
+        "other",
+      ],
+      price_type: ["hourly", "project", "negotiable", "fixed"],
+      product_status: ["active", "sold", "reserved", "archived"],
+    },
   },
 } as const
