@@ -263,7 +263,7 @@ function SignInForm({ remembered, switchToSignUp, onSuccess }: {
           <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-3">
             <Avatar className="h-11 w-11">
               <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-display font-bold">
-                {(rememberedName ?? displayPhone).charAt(0).toUpperCase()}
+                {(displayPhone).charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
