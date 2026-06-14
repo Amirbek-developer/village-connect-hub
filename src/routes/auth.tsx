@@ -228,16 +228,7 @@ function SignInForm({ remembered, switchToSignUp, onSuccess }: {
   const [busy, setBusy] = useState(false);
   const [editPhone, setEditPhone] = useState(!remembered);
 
-  // Try to load the remembered user's name for greeting
-  const { data: rememberedName } = useQuery({
-    queryKey: ["remembered-name", remembered],
-    enabled: !!remembered,
-    queryFn: async () => {
-      // best-effort lookup; allowed via profiles RLS only when signed in.
-      // Falls back to phone display if not accessible.
-      return null as string | null;
-    },
-  });
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
