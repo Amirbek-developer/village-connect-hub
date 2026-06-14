@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -106,6 +106,7 @@ function ProfileBody() {
       <Card className="p-6 h-fit">
         <div className="flex flex-col items-center text-center">
           <Avatar className="h-20 w-20 ring-4 ring-primary/15">
+            {profile?.avatar_url ? <AvatarImage src={profile.avatar_url} alt={name || "Profil"} /> : null}
             <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground text-2xl font-display font-extrabold">
               {initial}
             </AvatarFallback>

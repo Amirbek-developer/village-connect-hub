@@ -95,10 +95,25 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
         <AuthProvider>
+          <FirstVisitGate />
           <Outlet />
           <Toaster position="bottom-right" richColors closeButton />
         </AuthProvider>
       </I18nProvider>
     </QueryClientProvider>
   );
+}
+
+function FirstVisitGate() {
+  const router = useRouter();
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const visited = localStorage.getItem("qn_visited");
+    if (visited) return;
+    const path = router.state.location.pathname;
+    if (path === "/auth") return;
+    localStorage.setItem("qn_visited", "1");
+    router.navigate({ to: "/auth", search: { mode: "signup" } });
+  }, [router]);
+  return null;
 }
