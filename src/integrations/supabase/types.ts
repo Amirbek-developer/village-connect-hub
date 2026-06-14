@@ -278,9 +278,13 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          birth_date: string | null
           created_at: string
+          first_name: string | null
           id: string
+          joined_date: string | null
           language: string
+          last_name: string | null
           name: string
           phone: string | null
           updated_at: string
@@ -290,9 +294,13 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          birth_date?: string | null
           created_at?: string
+          first_name?: string | null
           id: string
+          joined_date?: string | null
           language?: string
+          last_name?: string | null
           name?: string
           phone?: string | null
           updated_at?: string
@@ -302,9 +310,13 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          birth_date?: string | null
           created_at?: string
+          first_name?: string | null
           id?: string
+          joined_date?: string | null
           language?: string
+          last_name?: string | null
           name?: string
           phone?: string | null
           updated_at?: string
