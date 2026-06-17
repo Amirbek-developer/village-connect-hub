@@ -73,8 +73,8 @@ function HomePage() {
     },
   });
   const firstName = profile?.first_name ?? "";
-  // @ts-expect-error nested relation
-  const villageName: string = profile?.villages?.name ?? "Tashkent";
+  const villageRel = (profile as { villages?: { name?: string } | null } | null)?.villages;
+  const villageName: string = villageRel?.name ?? "Tashkent";
 
   const { data: stats } = useQuery({
     queryKey: ["home-stats"],
