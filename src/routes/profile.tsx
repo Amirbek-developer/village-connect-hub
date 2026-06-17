@@ -205,7 +205,7 @@ function AccountSection({ profile }: { profile: any }) {
       const { error } = await supabase.from("profiles").update({
         first_name: firstName || null,
         last_name: lastName || null,
-        name: name || null,
+        name: name || firstName || "Foydalanuvchi",
         phone: phone || null,
         bio: bio || null,
         village_id: villageId || null,
