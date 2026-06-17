@@ -154,6 +154,13 @@ function HomePage() {
         </div>
       </section>
 
+      {/* PRAYER TIMES */}
+      <section className="px-4 lg:px-6 mt-6">
+        <PrayerTimes city={villageName} />
+      </section>
+
+
+
       {/* QUICK ACTIONS */}
       <section className="px-4 lg:px-6 mt-8">
         <h2 className="font-display text-lg font-bold mb-3">{t("home.quickActions")}</h2>
