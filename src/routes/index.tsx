@@ -127,12 +127,17 @@ function HomePage() {
           <div className="absolute -top-12 -right-12 h-48 w-48 rounded-full bg-secondary/30 blur-3xl" aria-hidden />
           <div className="absolute -bottom-16 -left-10 h-56 w-56 rounded-full bg-accent/20 blur-3xl" aria-hidden />
           <div className="relative">
-            <p className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary-foreground/80">
-              <Sun className="h-3.5 w-3.5" /> {today} · 24°C
+            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs uppercase tracking-widest text-primary-foreground/80">
+              <span className="inline-flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5" /> {formatUzDate(now)}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5" /> {formatUzTime(now)}
+              </span>
             </p>
             <h1 className="mt-3 font-display text-3xl sm:text-4xl font-extrabold text-balance">
-              {t("home.welcome")}{user ? "," : "!"}{" "}
-              {user && <span className="text-secondary">{user.email?.split("@")[0]}</span>}
+              {greeting(now)}{firstName ? "," : "!"}{" "}
+              {firstName && <span className="text-secondary">{firstName}</span>}
             </h1>
             <p className="mt-2 text-sm sm:text-base text-primary-foreground/90 max-w-xl text-balance">
               {t("home.tagline")} — mahalliy e'lonlar, bozor, xizmatlar va jamoa muhokamasi bir joyda.
