@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import {
   Megaphone, ShoppingBasket, Wrench, Landmark, HeartPulse, MapPin,
-  TrendingUp, Users, Calendar, ChevronRight, Sun,
+  TrendingUp, Users, Calendar, ChevronRight, Clock,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +12,25 @@ import { Badge } from "@/components/ui/badge";
 import { useT } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 import { formatPrice, timeAgo } from "@/lib/format";
+import { PrayerTimes } from "@/components/shared/PrayerTimes";
+
+const WEEKDAYS_UZ = ["yakshanba", "dushanba", "seshanba", "chorshanba", "payshanba", "juma", "shanba"];
+const MONTHS_UZ = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
+
+function formatUzDate(d: Date) {
+  return `${d.getDate()}-${MONTHS_UZ[d.getMonth()]}, ${WEEKDAYS_UZ[d.getDay()]}`;
+}
+function formatUzTime(d: Date) {
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+function greeting(d: Date) {
+  const h = d.getHours();
+  if (h < 5) return "Xayrli tun";
+  if (h < 11) return "Xayrli tong";
+  if (h < 17) return "Assalomu alaykum";
+  if (h < 21) return "Xayrli kun";
+  return "Xayrli kech";
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,7 +54,27 @@ const QUICK = [
 function HomePage() {
   const { t } = useT();
   const { user } = useAuth();
-  const today = new Date().toLocaleDateString("uz-UZ", { weekday: "long", day: "numeric", month: "long" });
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const i = setInterval(() => setNow(new Date()), 1000 * 30);
+    return () => clearInterval(i);
+  }, []);
+
+  const { data: profile } = useQuery({
+    queryKey: ["home-profile", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("first_name,last_name,village_id,villages(name)")
+        .eq("id", user!.id)
+        .maybeSingle();
+      return data;
+    },
+  });
+  const firstName = profile?.first_name ?? "";
+  const villageRel = (profile as { villages?: { name?: string } | null } | null)?.villages;
+  const villageName: string = villageRel?.name ?? "Tashkent";
 
   const { data: stats } = useQuery({
     queryKey: ["home-stats"],
@@ -87,12 +127,17 @@ function HomePage() {
           <div className="absolute -top-12 -right-12 h-48 w-48 rounded-full bg-secondary/30 blur-3xl" aria-hidden />
           <div className="absolute -bottom-16 -left-10 h-56 w-56 rounded-full bg-accent/20 blur-3xl" aria-hidden />
           <div className="relative">
-            <p className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary-foreground/80">
-              <Sun className="h-3.5 w-3.5" /> {today} · 24°C
+            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs uppercase tracking-widest text-primary-foreground/80">
+              <span className="inline-flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5" /> {formatUzDate(now)}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5" /> {formatUzTime(now)}
+              </span>
             </p>
             <h1 className="mt-3 font-display text-3xl sm:text-4xl font-extrabold text-balance">
-              {t("home.welcome")}{user ? "," : "!"}{" "}
-              {user && <span className="text-secondary">{user.email?.split("@")[0]}</span>}
+              {greeting(now)}{firstName ? "," : "!"}{" "}
+              {firstName && <span className="text-secondary">{firstName}</span>}
             </h1>
             <p className="mt-2 text-sm sm:text-base text-primary-foreground/90 max-w-xl text-balance">
               {t("home.tagline")} — mahalliy e'lonlar, bozor, xizmatlar va jamoa muhokamasi bir joyda.
@@ -108,6 +153,13 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* PRAYER TIMES */}
+      <section className="px-4 lg:px-6 mt-6">
+        <PrayerTimes city={villageName} />
+      </section>
+
+
 
       {/* QUICK ACTIONS */}
       <section className="px-4 lg:px-6 mt-8">
