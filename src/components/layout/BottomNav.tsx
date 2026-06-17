@@ -1,11 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Megaphone, Plus, ShoppingBasket, User as UserIcon } from "lucide-react";
+import { Home, MessageCircle, Plus, ShoppingBasket, User as UserIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useT } from "@/lib/i18n";
 
 const ITEMS = [
   { to: "/", icon: Home, key: "nav.home" },
-  { to: "/announcements", icon: Megaphone, key: "nav.announcements" },
+  { to: "/chat", icon: MessageCircle, key: "nav.chat" },
   { to: "/marketplace", icon: ShoppingBasket, key: "nav.marketplace" },
   { to: "/profile", icon: UserIcon, key: "nav.profile" },
 ] as const;
