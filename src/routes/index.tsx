@@ -54,7 +54,27 @@ const QUICK = [
 function HomePage() {
   const { t } = useT();
   const { user } = useAuth();
-  const today = new Date().toLocaleDateString("uz-UZ", { weekday: "long", day: "numeric", month: "long" });
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const i = setInterval(() => setNow(new Date()), 1000 * 30);
+    return () => clearInterval(i);
+  }, []);
+
+  const { data: profile } = useQuery({
+    queryKey: ["home-profile", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("first_name,last_name,village_id,villages(name)")
+        .eq("id", user!.id)
+        .maybeSingle();
+      return data;
+    },
+  });
+  const firstName = profile?.first_name ?? "";
+  // @ts-expect-error nested relation
+  const villageName: string = profile?.villages?.name ?? "Tashkent";
 
   const { data: stats } = useQuery({
     queryKey: ["home-stats"],
