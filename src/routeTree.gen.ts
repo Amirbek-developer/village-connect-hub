@@ -20,6 +20,8 @@ import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ChatIndexRouteImport } from './routes/chat.index'
+import { Route as ChatConversationIdRouteImport } from './routes/chat.$conversationId'
 
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
@@ -76,12 +78,22 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatIndexRoute = ChatIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ChatRoute,
+} as any)
+const ChatConversationIdRoute = ChatConversationIdRouteImport.update({
+  id: '/$conversationId',
+  path: '/$conversationId',
+  getParentRoute: () => ChatRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/announcements': typeof AnnouncementsRoute
   '/auth': typeof AuthRoute
-  '/chat': typeof ChatRoute
+  '/chat': typeof ChatRouteWithChildren
   '/education': typeof EducationRoute
   '/forum': typeof ForumRoute
   '/gov': typeof GovRoute
@@ -89,12 +101,13 @@ export interface FileRoutesByFullPath {
   '/marketplace': typeof MarketplaceRoute
   '/profile': typeof ProfileRoute
   '/services': typeof ServicesRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/chat/': typeof ChatIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/announcements': typeof AnnouncementsRoute
   '/auth': typeof AuthRoute
-  '/chat': typeof ChatRoute
   '/education': typeof EducationRoute
   '/forum': typeof ForumRoute
   '/gov': typeof GovRoute
@@ -102,13 +115,15 @@ export interface FileRoutesByTo {
   '/marketplace': typeof MarketplaceRoute
   '/profile': typeof ProfileRoute
   '/services': typeof ServicesRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/chat': typeof ChatIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/announcements': typeof AnnouncementsRoute
   '/auth': typeof AuthRoute
-  '/chat': typeof ChatRoute
+  '/chat': typeof ChatRouteWithChildren
   '/education': typeof EducationRoute
   '/forum': typeof ForumRoute
   '/gov': typeof GovRoute
@@ -116,6 +131,8 @@ export interface FileRoutesById {
   '/marketplace': typeof MarketplaceRoute
   '/profile': typeof ProfileRoute
   '/services': typeof ServicesRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/chat/': typeof ChatIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,12 +148,13 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/profile'
     | '/services'
+    | '/chat/$conversationId'
+    | '/chat/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/announcements'
     | '/auth'
-    | '/chat'
     | '/education'
     | '/forum'
     | '/gov'
@@ -144,6 +162,8 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/profile'
     | '/services'
+    | '/chat/$conversationId'
+    | '/chat'
   id:
     | '__root__'
     | '/'
@@ -157,13 +177,15 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/profile'
     | '/services'
+    | '/chat/$conversationId'
+    | '/chat/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnnouncementsRoute: typeof AnnouncementsRoute
   AuthRoute: typeof AuthRoute
-  ChatRoute: typeof ChatRoute
+  ChatRoute: typeof ChatRouteWithChildren
   EducationRoute: typeof EducationRoute
   ForumRoute: typeof ForumRoute
   GovRoute: typeof GovRoute
@@ -252,14 +274,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat/': {
+      id: '/chat/'
+      path: '/'
+      fullPath: '/chat/'
+      preLoaderRoute: typeof ChatIndexRouteImport
+      parentRoute: typeof ChatRoute
+    }
+    '/chat/$conversationId': {
+      id: '/chat/$conversationId'
+      path: '/$conversationId'
+      fullPath: '/chat/$conversationId'
+      preLoaderRoute: typeof ChatConversationIdRouteImport
+      parentRoute: typeof ChatRoute
+    }
   }
 }
+
+interface ChatRouteChildren {
+  ChatConversationIdRoute: typeof ChatConversationIdRoute
+  ChatIndexRoute: typeof ChatIndexRoute
+}
+
+const ChatRouteChildren: ChatRouteChildren = {
+  ChatConversationIdRoute: ChatConversationIdRoute,
+  ChatIndexRoute: ChatIndexRoute,
+}
+
+const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnnouncementsRoute: AnnouncementsRoute,
   AuthRoute: AuthRoute,
-  ChatRoute: ChatRoute,
+  ChatRoute: ChatRouteWithChildren,
   EducationRoute: EducationRoute,
   ForumRoute: ForumRoute,
   GovRoute: GovRoute,
