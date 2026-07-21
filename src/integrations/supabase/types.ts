@@ -70,6 +70,77 @@ export type Database = {
           },
         ]
       }
+      conversation_participants: {
+        Row: {
+          conversation_id: string
+          id: string
+          joined_at: string
+          last_read_at: string
+          role: Database["public"]["Enums"]["participant_role"]
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          id?: string
+          joined_at?: string
+          last_read_at?: string
+          role?: Database["public"]["Enums"]["participant_role"]
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          id?: string
+          joined_at?: string
+          last_read_at?: string
+          role?: Database["public"]["Enums"]["participant_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          last_message_at: string
+          title: string | null
+          type: Database["public"]["Enums"]["conversation_type"]
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          last_message_at?: string
+          title?: string | null
+          type: Database["public"]["Enums"]["conversation_type"]
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          last_message_at?: string
+          title?: string | null
+          type?: Database["public"]["Enums"]["conversation_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       forum_posts: {
         Row: {
           author_id: string
@@ -175,6 +246,53 @@ export type Database = {
             columns: ["village_id"]
             isOneToOne: false
             referencedRelation: "villages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string | null
+          conversation_id: string
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["message_kind"]
+          media_mime: string | null
+          media_name: string | null
+          media_size: number | null
+          media_url: string | null
+          sender_id: string
+        }
+        Insert: {
+          content?: string | null
+          conversation_id: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["message_kind"]
+          media_mime?: string | null
+          media_name?: string | null
+          media_size?: number | null
+          media_url?: string | null
+          sender_id: string
+        }
+        Update: {
+          content?: string | null
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["message_kind"]
+          media_mime?: string | null
+          media_name?: string | null
+          media_size?: number | null
+          media_url?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
             referencedColumns: ["id"]
           },
         ]
@@ -451,12 +569,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_create_channel: { Args: { _user: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      is_conversation_participant: {
+        Args: { _conv: string; _user: string }
+        Returns: boolean
+      }
+      participant_role_in: {
+        Args: { _conv: string; _user: string }
+        Returns: Database["public"]["Enums"]["participant_role"]
       }
     }
     Enums: {
@@ -467,6 +594,7 @@ export type Database = {
         | "moderator"
         | "verified"
         | "user"
+      conversation_type: "dm" | "group" | "channel"
       issue_status:
         | "pending"
         | "reviewing"
@@ -481,6 +609,8 @@ export type Database = {
         | "garbage"
         | "lighting"
         | "other"
+      message_kind: "text" | "image" | "file"
+      participant_role: "owner" | "admin" | "member"
       price_type: "hourly" | "project" | "negotiable" | "fixed"
       product_status: "active" | "sold" | "reserved" | "archived"
     }
@@ -618,6 +748,7 @@ export const Constants = {
         "verified",
         "user",
       ],
+      conversation_type: ["dm", "group", "channel"],
       issue_status: [
         "pending",
         "reviewing",
@@ -634,6 +765,8 @@ export const Constants = {
         "lighting",
         "other",
       ],
+      message_kind: ["text", "image", "file"],
+      participant_role: ["owner", "admin", "member"],
       price_type: ["hourly", "project", "negotiable", "fixed"],
       product_status: ["active", "sold", "reserved", "archived"],
     },
