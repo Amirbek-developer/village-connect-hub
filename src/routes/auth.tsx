@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  isValidUzPhone, normalizePhone, formatPhone, phoneToEmail,
+  isValidUzPhone, normalizePhone, formatPhone, phoneToEmail, formatPhoneInput,
   LAST_PHONE_KEY, VISITED_KEY,
 } from "@/lib/phone";
 
