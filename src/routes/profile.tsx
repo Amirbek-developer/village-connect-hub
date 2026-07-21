@@ -89,7 +89,7 @@ function ProfileHome({ profile, onOpen }: { profile: any; onOpen: (s: Section) =
   const lastName = profile.last_name || profile.name?.split(" ").slice(1).join(" ") || "";
   const fullName = [firstName, lastName].filter(Boolean).join(" ");
   const initial = (firstName || "Q").charAt(0).toUpperCase();
-  const username = (user?.email?.split("@")[0] || "user").toLowerCase();
+  const username = [firstName, lastName].filter(Boolean).join("").toLowerCase().replace(/[^a-z0-9]/g, "") || "user";
   const phone = profile.phone ? formatPhone(profile.phone) : "";
 
   const upload = useMutation({

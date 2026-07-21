@@ -117,7 +117,7 @@ function SignUpForm({ switchToSignIn, onSuccess }: {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [villageId, setVillageId] = useState<string>("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("+998 ");
   const [password, setPassword] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [joinedDate, setJoinedDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -194,7 +194,7 @@ function SignUpForm({ switchToSignIn, onSuccess }: {
           </Select>
         </div>
 
-        <Field id="su-phone" label="Telefon raqam" icon={Phone} type="tel" value={phone} onChange={setPhone} required placeholder="+998 90 123 45 67" />
+        <Field id="su-phone" label="Telefon raqam" icon={Phone} type="tel" value={phone} onChange={(v) => setPhone(formatPhoneInput(v))} required placeholder="+998 90 123 45 67" />
         <Field id="su-pw" label="Parol (kamida 8 belgi)" icon={Lock} type="password" value={password} onChange={setPassword} required />
 
         <div className="grid grid-cols-2 gap-3">
@@ -223,7 +223,7 @@ function SignInForm({ remembered, switchToSignUp, onSuccess }: {
   switchToSignUp: () => void;
   onSuccess: () => void;
 }) {
-  const [phone, setPhone] = useState(remembered ?? "");
+  const [phone, setPhone] = useState(remembered ? formatPhone(remembered) : "+998 ");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [editPhone, setEditPhone] = useState(!remembered);
@@ -275,7 +275,7 @@ function SignInForm({ remembered, switchToSignUp, onSuccess }: {
             </div>
           </div>
         ) : (
-          <Field id="si-phone" label="Telefon raqam" icon={Phone} type="tel" value={phone} onChange={setPhone} required placeholder="+998 90 123 45 67" />
+          <Field id="si-phone" label="Telefon raqam" icon={Phone} type="tel" value={phone} onChange={(v) => setPhone(formatPhoneInput(v))} required placeholder="+998 90 123 45 67" />
         )}
 
         <Field id="si-pw" label="Parol" icon={Lock} type="password" value={password} onChange={setPassword} required autoFocus={!!remembered && !editPhone} />
