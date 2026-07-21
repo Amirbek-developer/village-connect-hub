@@ -16,7 +16,6 @@ import { Route as HealthRouteImport } from './routes/health'
 import { Route as GovRouteImport } from './routes/gov'
 import { Route as ForumRouteImport } from './routes/forum'
 import { Route as EducationRouteImport } from './routes/education'
-import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as IndexRouteImport } from './routes/index'
@@ -56,11 +55,6 @@ const EducationRoute = EducationRouteImport.update({
   path: '/education',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChatRoute = ChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -81,7 +75,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/announcements': typeof AnnouncementsRoute
   '/auth': typeof AuthRoute
-  '/chat': typeof ChatRoute
   '/education': typeof EducationRoute
   '/forum': typeof ForumRoute
   '/gov': typeof GovRoute
@@ -94,7 +87,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/announcements': typeof AnnouncementsRoute
   '/auth': typeof AuthRoute
-  '/chat': typeof ChatRoute
   '/education': typeof EducationRoute
   '/forum': typeof ForumRoute
   '/gov': typeof GovRoute
@@ -108,7 +100,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/announcements': typeof AnnouncementsRoute
   '/auth': typeof AuthRoute
-  '/chat': typeof ChatRoute
   '/education': typeof EducationRoute
   '/forum': typeof ForumRoute
   '/gov': typeof GovRoute
@@ -123,7 +114,6 @@ export interface FileRouteTypes {
     | '/'
     | '/announcements'
     | '/auth'
-    | '/chat'
     | '/education'
     | '/forum'
     | '/gov'
@@ -136,7 +126,6 @@ export interface FileRouteTypes {
     | '/'
     | '/announcements'
     | '/auth'
-    | '/chat'
     | '/education'
     | '/forum'
     | '/gov'
@@ -149,7 +138,6 @@ export interface FileRouteTypes {
     | '/'
     | '/announcements'
     | '/auth'
-    | '/chat'
     | '/education'
     | '/forum'
     | '/gov'
@@ -163,7 +151,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnnouncementsRoute: typeof AnnouncementsRoute
   AuthRoute: typeof AuthRoute
-  ChatRoute: typeof ChatRoute
   EducationRoute: typeof EducationRoute
   ForumRoute: typeof ForumRoute
   GovRoute: typeof GovRoute
@@ -224,13 +211,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EducationRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chat': {
-      id: '/chat'
-      path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof ChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -259,7 +239,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnnouncementsRoute: AnnouncementsRoute,
   AuthRoute: AuthRoute,
-  ChatRoute: ChatRoute,
   EducationRoute: EducationRoute,
   ForumRoute: ForumRoute,
   GovRoute: GovRoute,
