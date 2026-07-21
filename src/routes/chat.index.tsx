@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { timeAgo } from "@/lib/format";
@@ -290,7 +290,7 @@ function NewDmDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenChan
       onOpenChange(false);
       navigate({ to: "/chat/$conversationId", params: { conversationId: id } });
     } catch (e: any) {
-      toast({ title: "Xato", description: e.message ?? String(e), variant: "destructive" });
+      toast.error("Xato", { description: e.message ?? String(e) });
     } finally {
       setBusy(false);
     }
@@ -394,7 +394,7 @@ function NewGroupDialog({
   const submit = async () => {
     if (!user) return;
     if (!title.trim()) {
-      toast({ title: "Nomi kerak", variant: "destructive" });
+      toast.error("Nomi kerak");
       return;
     }
     setBusy(true);
@@ -410,14 +410,9 @@ function NewGroupDialog({
       onOpenChange(false);
       navigate({ to: "/chat/$conversationId", params: { conversationId: id } });
     } catch (e: any) {
-      toast({
-        title: "Xato",
-        description:
-          type === "channel"
+      toast.error("Xato", { description: type === "channel"
             ? "Kanal yaratish uchun ruxsat yo'q (faqat administratorlar) yoki: " + (e.message ?? String(e))
-            : e.message ?? String(e),
-        variant: "destructive",
-      });
+            : e.message ?? String(e) });
     } finally {
       setBusy(false);
     }

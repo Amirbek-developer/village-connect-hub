@@ -15,7 +15,7 @@ import {
 import { AuthRequired } from "@/components/shared/AuthGuard";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import {
@@ -270,7 +270,7 @@ function MessageBubble({
     try {
       await deleteMessage(message.id);
     } catch (e: any) {
-      toast({ title: "Xato", description: e.message ?? String(e), variant: "destructive" });
+      toast.error("Xato", { description: e.message ?? String(e) });
     }
   };
 
@@ -363,7 +363,7 @@ function Composer({ conversationId }: { conversationId: string }) {
     try {
       await sendTextMessage(user.id, conversationId, v);
     } catch (e: any) {
-      toast({ title: "Xato", description: e.message ?? String(e), variant: "destructive" });
+      toast.error("Xato", { description: e.message ?? String(e) });
       setText(v);
     } finally {
       setSending(false);
@@ -373,14 +373,14 @@ function Composer({ conversationId }: { conversationId: string }) {
   const upload = async (file: File) => {
     if (!user) return;
     if (file.size > 20 * 1024 * 1024) {
-      toast({ title: "Fayl juda katta", description: "Maksimal 20MB", variant: "destructive" });
+      toast.error("Fayl juda katta", { description: "Maksimal 20MB" });
       return;
     }
     setSending(true);
     try {
       await uploadAndSendMedia(user.id, conversationId, file);
     } catch (e: any) {
-      toast({ title: "Yuklashda xato", description: e.message ?? String(e), variant: "destructive" });
+      toast.error("Yuklashda xato", { description: e.message ?? String(e) });
     } finally {
       setSending(false);
     }
