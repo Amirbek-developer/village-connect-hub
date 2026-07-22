@@ -276,6 +276,112 @@ function HomePage() {
         </div>
       </section>
 
+      {/* TIP OF THE DAY */}
+      <section className="px-4 lg:px-6 mt-8">
+        <Card className="p-5 bg-gradient-to-br from-secondary/20 to-accent/10 border-l-4 border-l-secondary flex gap-4 items-start">
+          <div className="grid h-11 w-11 place-items-center rounded-xl bg-secondary/30 text-secondary-foreground shrink-0">
+            <Lightbulb className="h-5 w-5" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">Kunlik maslahat</p>
+            <p className="font-display font-semibold mt-1 text-balance">{tipOfDay}</p>
+          </div>
+        </Card>
+      </section>
+
+      {/* LATEST ANNOUNCEMENTS */}
+      <section className="px-4 lg:px-6 mt-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-display text-lg font-bold flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-primary" /> So'nggi e'lonlar
+          </h2>
+          <Link to="/announcements" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+            Barchasi <ChevronRight className="h-4 w-4" />
+          </Link>
+        </div>
+        {latestAnnouncements && latestAnnouncements.length > 0 ? (
+          <div className="grid gap-2">
+            {latestAnnouncements.map((a) => (
+              <Link
+                key={a.id}
+                to="/announcements"
+                className="card-hover flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+              >
+                <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary shrink-0">
+                  <Megaphone className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium truncate">{a.title}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {a.category ?? "E'lon"} · {new Date(a.created_at).toLocaleDateString("uz-UZ")}
+                  </p>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <Card className="p-4 text-sm text-muted-foreground text-center">Hozircha e'lonlar yo'q</Card>
+        )}
+      </section>
+
+      {/* USEFUL GOV LINKS */}
+      <section className="px-4 lg:px-6 mt-8">
+        <h2 className="font-display text-lg font-bold mb-3 flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-accent" /> Foydali xizmatlar
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {USEFUL_LINKS.map((l) => (
+            <a
+              key={l.url}
+              href={l.url}
+              target="_blank"
+              rel="noreferrer"
+              className="card-hover"
+            >
+              <Card className="p-4">
+                <div className="flex items-center justify-between">
+                  <p className="font-display font-bold">{l.name}</p>
+                  <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-1">{l.desc}</p>
+              </Card>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* NEW MEMBERS */}
+      <section className="px-4 lg:px-6 mt-8">
+        <h2 className="font-display text-lg font-bold mb-3 flex items-center gap-2">
+          <UserPlus className="h-5 w-5 text-success" /> Yangi a'zolar
+        </h2>
+        <Card className="p-4">
+          {newMembers && newMembers.length > 0 ? (
+            <ul className="flex flex-wrap gap-4">
+              {newMembers.map((m) => {
+                const name = [m.first_name, m.last_name].filter(Boolean).join(" ") || "Foydalanuvchi";
+                const init = name.split(" ").map((s) => s[0]?.toUpperCase() ?? "").slice(0, 2).join("");
+                return (
+                  <li key={m.id} className="flex flex-col items-center gap-1 w-16">
+                    {m.avatar_url ? (
+                      <img src={m.avatar_url} alt={name} className="h-12 w-12 rounded-full object-cover" />
+                    ) : (
+                      <div className="h-12 w-12 rounded-full bg-primary/15 text-primary grid place-items-center text-sm font-bold">
+                        {init}
+                      </div>
+                    )}
+                    <p className="text-[11px] text-center truncate w-full">{name.split(" ")[0]}</p>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="text-sm text-muted-foreground text-center">Hozircha a'zolar yo'q</p>
+          )}
+        </Card>
+      </section>
+
       {/* EVENTS / TIPS */}
       <section className="px-4 lg:px-6 mt-8 mb-8">
         <div className="grid gap-3 md:grid-cols-2">
@@ -297,6 +403,7 @@ function HomePage() {
           </Card>
         </div>
       </section>
+
 
     </AppLayout>
   );
