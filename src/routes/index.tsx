@@ -153,63 +153,61 @@ function HomePage() {
         </div>
       </section>
 
-      {/* STATS */}
+      {/* WEATHER + MAP */}
+      <section className="px-4 lg:px-6 mt-8 grid gap-4 md:grid-cols-2">
+        <WeatherCard city={villageName} />
+        <VillageMap city={villageName} />
+      </section>
+
+      {/* CURRENCY RATES */}
       <section className="px-4 lg:px-6 mt-8">
-        <h2 className="font-display text-lg font-bold mb-3">{t("home.stats")}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard icon={Megaphone} label="E'lonlar" value={stats?.announcements ?? 0} hue="primary" />
-          <StatCard icon={ShoppingBasket} label="Mahsulotlar" value={stats?.products ?? 0} hue="secondary" />
-          <StatCard icon={Wrench} label="Xizmatlar" value={stats?.services ?? 0} hue="info" />
-          <StatCard icon={MapPin} label="Muammolar" value={stats?.issues ?? 0} hue="accent" />
+        <h2 className="font-display text-lg font-bold mb-3">Valyuta kurslari (CBU)</h2>
+        <div className="grid grid-cols-3 gap-3">
+          {(["USD", "EUR", "RUB"] as const).map((c) => {
+            const r = rates?.[c];
+            return (
+              <Card key={c} className="p-4">
+                <p className="text-xs text-muted-foreground">{c} / UZS</p>
+                <p className="font-display text-xl font-extrabold mt-1">
+                  {r ? Number(r.Rate).toLocaleString("uz-UZ", { maximumFractionDigits: 2 }) : "—"}
+                </p>
+                {r && (
+                  <p className={`text-[11px] mt-1 ${Number(r.Diff) >= 0 ? "text-success" : "text-destructive"}`}>
+                    {Number(r.Diff) >= 0 ? "▲" : "▼"} {Math.abs(Number(r.Diff)).toFixed(2)}
+                  </p>
+                )}
+              </Card>
+            );
+          })}
         </div>
       </section>
 
-      {/* LATEST ANNOUNCEMENTS */}
+      {/* EMERGENCY CONTACTS */}
       <section className="px-4 lg:px-6 mt-8">
-        <SectionHeader title={t("home.latestAnn")} to="/announcements" />
-        {latestAnn.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-8 text-center">{t("common.empty")}</p>
-        ) : (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {latestAnn.map((a) => (
-              <Link key={a.id} to="/announcements" className="card-hover">
-                <Card className="p-4 h-full">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <Badge variant={a.is_urgent ? "destructive" : "secondary"} className="text-[10px]">
-                      {a.is_urgent ? "Shoshilinch" : a.type === "official" ? "Rasmiy" : a.type === "event" ? "Tadbir" : "Yangilik"}
-                    </Badge>
-                    <span className="text-[11px] text-muted-foreground">{timeAgo(a.created_at)}</span>
+        <h2 className="font-display text-lg font-bold mb-3">Favqulodda raqamlar</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { n: "101", label: "Yong'in xizmati", icon: Flame, color: "bg-destructive/10 text-destructive" },
+            { n: "102", label: "Militsiya", icon: Shield, color: "bg-info/15 text-info" },
+            { n: "103", label: "Tez yordam", icon: Ambulance, color: "bg-success/15 text-success" },
+            { n: "1050", label: "Ishonch telefoni", icon: Phone, color: "bg-accent/15 text-accent" },
+          ].map((e) => {
+            const Icon = e.icon;
+            return (
+              <a key={e.n} href={`tel:${e.n}`} className="card-hover">
+                <Card className="p-4 flex items-center gap-3">
+                  <div className={`grid h-11 w-11 place-items-center rounded-xl ${e.color}`}>
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <p className="font-display font-bold text-sm leading-snug line-clamp-2">{a.title}</p>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* MARKETPLACE PREVIEW */}
-      <section className="px-4 lg:px-6 mt-8">
-        <SectionHeader title={t("home.market")} to="/marketplace" />
-        {latestProducts.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-8 text-center">{t("common.empty")}</p>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {latestProducts.map((p) => (
-              <Link key={p.id} to="/marketplace" className="card-hover">
-                <Card className="overflow-hidden h-full p-0">
-                  <div className="aspect-square bg-gradient-to-br from-secondary/20 to-primary/10 flex items-center justify-center text-secondary-foreground">
-                    <ShoppingBasket className="h-8 w-8 opacity-40" />
-                  </div>
-                  <div className="p-2.5">
-                    <p className="font-medium text-xs line-clamp-1">{p.title}</p>
-                    <p className="font-display font-bold text-sm text-primary mt-1">{formatPrice(p.price, p.unit)}</p>
+                  <div>
+                    <p className="font-display text-xl font-extrabold leading-none">{e.n}</p>
+                    <p className="text-[11px] text-muted-foreground mt-1">{e.label}</p>
                   </div>
                 </Card>
-              </Link>
-            ))}
-          </div>
-        )}
+              </a>
+            );
+          })}
+        </div>
       </section>
 
       {/* EVENTS / TIPS */}
@@ -224,15 +222,16 @@ function HomePage() {
             </Link>
           </Card>
           <Card className="p-5 border-l-4 border-l-primary">
-            <TrendingUp className="h-5 w-5 text-primary mb-2" />
-            <p className="font-display font-bold">Mahalliy fermer bozori</p>
-            <p className="text-sm text-muted-foreground mt-1">To'g'ridan-to'g'ri fermerdan mevali, sabzavot va sut mahsulotlari.</p>
-            <Link to="/marketplace" className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-              Bozorga o'tish <ChevronRight className="h-4 w-4" />
+            <Users className="h-5 w-5 text-primary mb-2" />
+            <p className="font-display font-bold">Jamoa forumi</p>
+            <p className="text-sm text-muted-foreground mt-1">Qishloqdoshlar bilan muhokamalarga qo'shiling, savol bering va yordam bering.</p>
+            <Link to="/forum" className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+              Forumga o'tish <ChevronRight className="h-4 w-4" />
             </Link>
           </Card>
         </div>
       </section>
+
     </AppLayout>
   );
 }
