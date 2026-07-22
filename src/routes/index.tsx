@@ -313,7 +313,7 @@ function HomePage() {
                 <div className="min-w-0 flex-1">
                   <p className="font-medium truncate">{a.title}</p>
                   <p className="text-[11px] text-muted-foreground">
-                    {a.category ?? "E'lon"} · {new Date(a.created_at).toLocaleDateString("uz-UZ")}
+                    {a.type ?? "E'lon"} · {new Date(a.created_at).toLocaleDateString("uz-UZ")}
                   </p>
                 </div>
                 <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
