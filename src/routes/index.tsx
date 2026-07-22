@@ -2,20 +2,21 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {
-  Megaphone, ShoppingBasket, Wrench, Landmark, HeartPulse, MapPin,
-  TrendingUp, Users, Calendar, ChevronRight, Clock,
+  Megaphone, ShoppingBasket, Wrench, Landmark, HeartPulse,
+  Users, Calendar, ChevronRight, Clock, Phone, Flame, Shield, Ambulance,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useT } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
-import { formatPrice, timeAgo } from "@/lib/format";
 import { PrayerTimes } from "@/components/shared/PrayerTimes";
+import { WeatherCard } from "@/components/shared/WeatherCard";
+import { VillageMap } from "@/components/shared/VillageMap";
 
 const WEEKDAYS_UZ = ["yakshanba", "dushanba", "seshanba", "chorshanba", "payshanba", "juma", "shanba"];
 const MONTHS_UZ = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
+
 
 function formatUzDate(d: Date) {
   return `${d.getDate()}-${MONTHS_UZ[d.getMonth()]}, ${WEEKDAYS_UZ[d.getDay()]}`;
