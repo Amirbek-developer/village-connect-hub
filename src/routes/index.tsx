@@ -236,34 +236,3 @@ function HomePage() {
   );
 }
 
-function SectionHeader({ title, to }: { title: string; to: string }) {
-  return (
-    <div className="flex items-end justify-between mb-3 gap-3">
-      <h2 className="font-display text-lg font-bold">{title}</h2>
-      <Link to={to} className="text-xs font-medium text-primary hover:underline flex items-center gap-0.5">
-        Hammasi <ChevronRight className="h-3.5 w-3.5" />
-      </Link>
-    </div>
-  );
-}
-
-function StatCard({ icon: Icon, label, value, hue }: {
-  icon: typeof Megaphone; label: string; value: number;
-  hue: "primary" | "secondary" | "info" | "accent";
-}) {
-  const hueMap = {
-    primary: "bg-primary/10 text-primary",
-    secondary: "bg-secondary/20 text-secondary-foreground",
-    info: "bg-info/15 text-info",
-    accent: "bg-accent/15 text-accent",
-  };
-  return (
-    <Card className="p-4 animate-[count-up_0.5s_ease-out]">
-      <div className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ${hueMap[hue]}`}>
-        <Icon className="h-4 w-4" />
-      </div>
-      <p className="mt-3 font-display text-2xl font-extrabold">{value.toLocaleString("uz-UZ")}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
-    </Card>
-  );
-}
