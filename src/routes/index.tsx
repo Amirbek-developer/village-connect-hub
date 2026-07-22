@@ -107,6 +107,48 @@ function HomePage() {
     staleTime: 1000 * 60 * 60,
   });
 
+  const { data: hijri } = useQuery({
+    queryKey: ["hijri", now.toDateString()],
+    queryFn: async () => {
+      const d = new Date();
+      const dd = String(d.getDate()).padStart(2, "0");
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const res = await fetch(`https://api.aladhan.com/v1/gToH/${dd}-${mm}-${d.getFullYear()}`);
+      const json = await res.json();
+      const h = json?.data?.hijri;
+      return h ? `${h.day}-${h.month.en} ${h.year}` : null;
+    },
+    staleTime: 1000 * 60 * 60 * 6,
+  });
+
+  const { data: latestAnnouncements } = useQuery({
+    queryKey: ["home-latest-announcements"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("announcements")
+        .select("id,title,created_at,category")
+        .order("created_at", { ascending: false })
+        .limit(3);
+      return data ?? [];
+    },
+  });
+
+  const { data: newMembers } = useQuery({
+    queryKey: ["home-new-members"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("id,first_name,last_name,avatar_url,created_at")
+        .order("created_at", { ascending: false })
+        .limit(5);
+      return data ?? [];
+    },
+  });
+
+  const tipOfDay = useMemo(() => {
+    const day = Math.floor(now.getTime() / (1000 * 60 * 60 * 24));
+    return TIPS[day % TIPS.length];
+  }, [now]);
 
   return (
     <AppLayout>
@@ -123,6 +165,11 @@ function HomePage() {
               <span className="inline-flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5" /> {formatUzTime(now)}
               </span>
+              {hijri && (
+                <span className="inline-flex items-center gap-1.5">
+                  <Moon className="h-3.5 w-3.5" /> {hijri}
+                </span>
+              )}
             </p>
             <h1 className="mt-3 font-display text-3xl sm:text-4xl font-extrabold text-balance">
               {greeting(now)}{firstName ? "," : "!"}{" "}
