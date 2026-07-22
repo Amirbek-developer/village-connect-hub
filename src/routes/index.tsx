@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Megaphone, ShoppingBasket, Wrench, Landmark, HeartPulse,
   Users, Calendar, ChevronRight, Clock, Phone, Flame, Shield, Ambulance,
+  Sparkles, Moon, ExternalLink, Lightbulb, UserPlus, TrendingUp,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +17,24 @@ import { VillageMap } from "@/components/shared/VillageMap";
 
 const WEEKDAYS_UZ = ["yakshanba", "dushanba", "seshanba", "chorshanba", "payshanba", "juma", "shanba"];
 const MONTHS_UZ = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
+
+const TIPS = [
+  "Ekinlarni erta tongda sug'orish suvni tejaydi va o'simlik ildizini kuydirmaydi.",
+  "Qo'shningizning hol-ahvolini so'rash — sadaqadir. Bugun kimgadir qo'ng'iroq qiling.",
+  "Elektr energiyasini tejash uchun LED lampalardan foydalaning — 80% gacha tejaydi.",
+  "Bolalarning kunlik ekran vaqti 2 soatdan oshmasligi tavsiya etiladi.",
+  "Uy hayvonlariga toza suv har kuni yangilanib turilishi kerak.",
+  "Bozorga ro'yxat bilan boring — ortiqcha xarajatning oldini oladi.",
+  "Kuniga 8 stakan suv iching — sog'liq va tetiklik uchun eng arzon dori.",
+  "Mahalla yig'ilishlarida ishtirok eting — qarorlar sizsiz qabul qilinmasin.",
+];
+
+const USEFUL_LINKS = [
+  { name: "my.gov.uz", desc: "Davlat xizmatlari", url: "https://my.gov.uz" },
+  { name: "soliq.uz", desc: "Soliq to'lovlari", url: "https://soliq.uz" },
+  { name: "hemis.uz", desc: "Ta'lim tizimi", url: "https://hemis.uz" },
+  { name: "pochta.uz", desc: "Pochta xizmatlari", url: "https://pochta.uz" },
+];
 
 
 function formatUzDate(d: Date) {
