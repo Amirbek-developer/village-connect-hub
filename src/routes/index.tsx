@@ -77,48 +77,17 @@ function HomePage() {
   const villageRel = (profile as { villages?: { name?: string } | null } | null)?.villages;
   const villageName: string = villageRel?.name ?? "Tashkent";
 
-  const { data: stats } = useQuery({
-    queryKey: ["home-stats"],
+  const { data: rates } = useQuery({
+    queryKey: ["cbu-rates"],
     queryFn: async () => {
-      const [ann, prod, srv, iss] = await Promise.all([
-        supabase.from("announcements").select("id", { count: "exact", head: true }),
-        supabase.from("products").select("id", { count: "exact", head: true }),
-        supabase.from("services").select("id", { count: "exact", head: true }),
-        supabase.from("issues").select("id", { count: "exact", head: true }),
-      ]);
-      return {
-        announcements: ann.count ?? 0,
-        products: prod.count ?? 0,
-        services: srv.count ?? 0,
-        issues: iss.count ?? 0,
-      };
+      const res = await fetch("https://cbu.uz/uz/arkhiv-kursov-valyut/json/");
+      const json = await res.json();
+      const pick = (code: string) => json.find((r: { Ccy: string }) => r.Ccy === code);
+      return { USD: pick("USD"), EUR: pick("EUR"), RUB: pick("RUB") };
     },
+    staleTime: 1000 * 60 * 60,
   });
 
-  const { data: latestAnn = [] } = useQuery({
-    queryKey: ["home-latest-ann"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("announcements")
-        .select("id,title,type,is_urgent,created_at,images")
-        .order("created_at", { ascending: false })
-        .limit(5);
-      return data ?? [];
-    },
-  });
-
-  const { data: latestProducts = [] } = useQuery({
-    queryKey: ["home-latest-products"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("products")
-        .select("id,title,price,unit,images,category,created_at")
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(6);
-      return data ?? [];
-    },
-  });
 
   return (
     <AppLayout>
