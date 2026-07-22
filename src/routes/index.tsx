@@ -126,7 +126,7 @@ function HomePage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("announcements")
-        .select("id,title,created_at,category")
+        .select("id,title,created_at,type")
         .order("created_at", { ascending: false })
         .limit(3);
       return data ?? [];
