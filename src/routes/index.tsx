@@ -2,20 +2,21 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {
-  Megaphone, ShoppingBasket, Wrench, Landmark, HeartPulse, MapPin,
-  TrendingUp, Users, Calendar, ChevronRight, Clock,
+  Megaphone, ShoppingBasket, Wrench, Landmark, HeartPulse,
+  Users, Calendar, ChevronRight, Clock, Phone, Flame, Shield, Ambulance,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useT } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
-import { formatPrice, timeAgo } from "@/lib/format";
 import { PrayerTimes } from "@/components/shared/PrayerTimes";
+import { WeatherCard } from "@/components/shared/WeatherCard";
+import { VillageMap } from "@/components/shared/VillageMap";
 
 const WEEKDAYS_UZ = ["yakshanba", "dushanba", "seshanba", "chorshanba", "payshanba", "juma", "shanba"];
 const MONTHS_UZ = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
+
 
 function formatUzDate(d: Date) {
   return `${d.getDate()}-${MONTHS_UZ[d.getMonth()]}, ${WEEKDAYS_UZ[d.getDay()]}`;
@@ -76,48 +77,17 @@ function HomePage() {
   const villageRel = (profile as { villages?: { name?: string } | null } | null)?.villages;
   const villageName: string = villageRel?.name ?? "Tashkent";
 
-  const { data: stats } = useQuery({
-    queryKey: ["home-stats"],
+  const { data: rates } = useQuery({
+    queryKey: ["cbu-rates"],
     queryFn: async () => {
-      const [ann, prod, srv, iss] = await Promise.all([
-        supabase.from("announcements").select("id", { count: "exact", head: true }),
-        supabase.from("products").select("id", { count: "exact", head: true }),
-        supabase.from("services").select("id", { count: "exact", head: true }),
-        supabase.from("issues").select("id", { count: "exact", head: true }),
-      ]);
-      return {
-        announcements: ann.count ?? 0,
-        products: prod.count ?? 0,
-        services: srv.count ?? 0,
-        issues: iss.count ?? 0,
-      };
+      const res = await fetch("https://cbu.uz/uz/arkhiv-kursov-valyut/json/");
+      const json = await res.json();
+      const pick = (code: string) => json.find((r: { Ccy: string }) => r.Ccy === code);
+      return { USD: pick("USD"), EUR: pick("EUR"), RUB: pick("RUB") };
     },
+    staleTime: 1000 * 60 * 60,
   });
 
-  const { data: latestAnn = [] } = useQuery({
-    queryKey: ["home-latest-ann"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("announcements")
-        .select("id,title,type,is_urgent,created_at,images")
-        .order("created_at", { ascending: false })
-        .limit(5);
-      return data ?? [];
-    },
-  });
-
-  const { data: latestProducts = [] } = useQuery({
-    queryKey: ["home-latest-products"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("products")
-        .select("id,title,price,unit,images,category,created_at")
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(6);
-      return data ?? [];
-    },
-  });
 
   return (
     <AppLayout>
@@ -183,63 +153,61 @@ function HomePage() {
         </div>
       </section>
 
-      {/* STATS */}
+      {/* WEATHER + MAP */}
+      <section className="px-4 lg:px-6 mt-8 grid gap-4 md:grid-cols-2">
+        <WeatherCard city={villageName} />
+        <VillageMap city={villageName} />
+      </section>
+
+      {/* CURRENCY RATES */}
       <section className="px-4 lg:px-6 mt-8">
-        <h2 className="font-display text-lg font-bold mb-3">{t("home.stats")}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard icon={Megaphone} label="E'lonlar" value={stats?.announcements ?? 0} hue="primary" />
-          <StatCard icon={ShoppingBasket} label="Mahsulotlar" value={stats?.products ?? 0} hue="secondary" />
-          <StatCard icon={Wrench} label="Xizmatlar" value={stats?.services ?? 0} hue="info" />
-          <StatCard icon={MapPin} label="Muammolar" value={stats?.issues ?? 0} hue="accent" />
+        <h2 className="font-display text-lg font-bold mb-3">Valyuta kurslari (CBU)</h2>
+        <div className="grid grid-cols-3 gap-3">
+          {(["USD", "EUR", "RUB"] as const).map((c) => {
+            const r = rates?.[c];
+            return (
+              <Card key={c} className="p-4">
+                <p className="text-xs text-muted-foreground">{c} / UZS</p>
+                <p className="font-display text-xl font-extrabold mt-1">
+                  {r ? Number(r.Rate).toLocaleString("uz-UZ", { maximumFractionDigits: 2 }) : "—"}
+                </p>
+                {r && (
+                  <p className={`text-[11px] mt-1 ${Number(r.Diff) >= 0 ? "text-success" : "text-destructive"}`}>
+                    {Number(r.Diff) >= 0 ? "▲" : "▼"} {Math.abs(Number(r.Diff)).toFixed(2)}
+                  </p>
+                )}
+              </Card>
+            );
+          })}
         </div>
       </section>
 
-      {/* LATEST ANNOUNCEMENTS */}
+      {/* EMERGENCY CONTACTS */}
       <section className="px-4 lg:px-6 mt-8">
-        <SectionHeader title={t("home.latestAnn")} to="/announcements" />
-        {latestAnn.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-8 text-center">{t("common.empty")}</p>
-        ) : (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {latestAnn.map((a) => (
-              <Link key={a.id} to="/announcements" className="card-hover">
-                <Card className="p-4 h-full">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <Badge variant={a.is_urgent ? "destructive" : "secondary"} className="text-[10px]">
-                      {a.is_urgent ? "Shoshilinch" : a.type === "official" ? "Rasmiy" : a.type === "event" ? "Tadbir" : "Yangilik"}
-                    </Badge>
-                    <span className="text-[11px] text-muted-foreground">{timeAgo(a.created_at)}</span>
+        <h2 className="font-display text-lg font-bold mb-3">Favqulodda raqamlar</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { n: "101", label: "Yong'in xizmati", icon: Flame, color: "bg-destructive/10 text-destructive" },
+            { n: "102", label: "Militsiya", icon: Shield, color: "bg-info/15 text-info" },
+            { n: "103", label: "Tez yordam", icon: Ambulance, color: "bg-success/15 text-success" },
+            { n: "1050", label: "Ishonch telefoni", icon: Phone, color: "bg-accent/15 text-accent" },
+          ].map((e) => {
+            const Icon = e.icon;
+            return (
+              <a key={e.n} href={`tel:${e.n}`} className="card-hover">
+                <Card className="p-4 flex items-center gap-3">
+                  <div className={`grid h-11 w-11 place-items-center rounded-xl ${e.color}`}>
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <p className="font-display font-bold text-sm leading-snug line-clamp-2">{a.title}</p>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* MARKETPLACE PREVIEW */}
-      <section className="px-4 lg:px-6 mt-8">
-        <SectionHeader title={t("home.market")} to="/marketplace" />
-        {latestProducts.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-8 text-center">{t("common.empty")}</p>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {latestProducts.map((p) => (
-              <Link key={p.id} to="/marketplace" className="card-hover">
-                <Card className="overflow-hidden h-full p-0">
-                  <div className="aspect-square bg-gradient-to-br from-secondary/20 to-primary/10 flex items-center justify-center text-secondary-foreground">
-                    <ShoppingBasket className="h-8 w-8 opacity-40" />
-                  </div>
-                  <div className="p-2.5">
-                    <p className="font-medium text-xs line-clamp-1">{p.title}</p>
-                    <p className="font-display font-bold text-sm text-primary mt-1">{formatPrice(p.price, p.unit)}</p>
+                  <div>
+                    <p className="font-display text-xl font-extrabold leading-none">{e.n}</p>
+                    <p className="text-[11px] text-muted-foreground mt-1">{e.label}</p>
                   </div>
                 </Card>
-              </Link>
-            ))}
-          </div>
-        )}
+              </a>
+            );
+          })}
+        </div>
       </section>
 
       {/* EVENTS / TIPS */}
@@ -254,47 +222,17 @@ function HomePage() {
             </Link>
           </Card>
           <Card className="p-5 border-l-4 border-l-primary">
-            <TrendingUp className="h-5 w-5 text-primary mb-2" />
-            <p className="font-display font-bold">Mahalliy fermer bozori</p>
-            <p className="text-sm text-muted-foreground mt-1">To'g'ridan-to'g'ri fermerdan mevali, sabzavot va sut mahsulotlari.</p>
-            <Link to="/marketplace" className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-              Bozorga o'tish <ChevronRight className="h-4 w-4" />
+            <Users className="h-5 w-5 text-primary mb-2" />
+            <p className="font-display font-bold">Jamoa forumi</p>
+            <p className="text-sm text-muted-foreground mt-1">Qishloqdoshlar bilan muhokamalarga qo'shiling, savol bering va yordam bering.</p>
+            <Link to="/forum" className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+              Forumga o'tish <ChevronRight className="h-4 w-4" />
             </Link>
           </Card>
         </div>
       </section>
+
     </AppLayout>
   );
 }
 
-function SectionHeader({ title, to }: { title: string; to: string }) {
-  return (
-    <div className="flex items-end justify-between mb-3 gap-3">
-      <h2 className="font-display text-lg font-bold">{title}</h2>
-      <Link to={to} className="text-xs font-medium text-primary hover:underline flex items-center gap-0.5">
-        Hammasi <ChevronRight className="h-3.5 w-3.5" />
-      </Link>
-    </div>
-  );
-}
-
-function StatCard({ icon: Icon, label, value, hue }: {
-  icon: typeof Megaphone; label: string; value: number;
-  hue: "primary" | "secondary" | "info" | "accent";
-}) {
-  const hueMap = {
-    primary: "bg-primary/10 text-primary",
-    secondary: "bg-secondary/20 text-secondary-foreground",
-    info: "bg-info/15 text-info",
-    accent: "bg-accent/15 text-accent",
-  };
-  return (
-    <Card className="p-4 animate-[count-up_0.5s_ease-out]">
-      <div className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ${hueMap[hue]}`}>
-        <Icon className="h-4 w-4" />
-      </div>
-      <p className="mt-3 font-display text-2xl font-extrabold">{value.toLocaleString("uz-UZ")}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
-    </Card>
-  );
-}
