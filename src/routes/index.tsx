@@ -133,17 +133,8 @@ function HomePage() {
     },
   });
 
-  const { data: marketPreview } = useQuery({
-    queryKey: ["home-market-preview"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("products")
-        .select("id,title,price,unit,images,created_at")
-        .order("created_at", { ascending: false })
-        .limit(6);
-      return data ?? [];
-    },
-  });
+
+
 
 
 
