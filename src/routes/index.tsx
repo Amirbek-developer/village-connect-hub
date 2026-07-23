@@ -133,17 +133,18 @@ function HomePage() {
     },
   });
 
-  const { data: newMembers } = useQuery({
-    queryKey: ["home-new-members"],
+  const { data: marketPreview } = useQuery({
+    queryKey: ["home-market-preview"],
     queryFn: async () => {
       const { data } = await supabase
-        .from("profiles")
-        .select("id,first_name,last_name,avatar_url,created_at")
+        .from("products")
+        .select("id,title,price,image_url,created_at")
         .order("created_at", { ascending: false })
-        .limit(5);
+        .limit(6);
       return data ?? [];
     },
   });
+
 
   const tipOfDay = useMemo(() => {
     const day = Math.floor(now.getTime() / (1000 * 60 * 60 * 24));
