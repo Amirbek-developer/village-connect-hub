@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Megaphone, ShoppingBasket, Wrench, Landmark, HeartPulse,
   Users, ChevronRight, Clock, Phone, Flame, Shield, Ambulance,
-  Sparkles, Moon, ExternalLink, Lightbulb, TrendingUp, Wheat, Activity, Quote, Calendar,
+  Sparkles, Moon, ExternalLink, Lightbulb, TrendingUp, Calendar,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
