@@ -12,9 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
+import { Route as LostFoundRouteImport } from './routes/lost-found'
+import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as GovRouteImport } from './routes/gov'
 import { Route as ForumRouteImport } from './routes/forum'
+import { Route as EventsRouteImport } from './routes/events'
 import { Route as EducationRouteImport } from './routes/education'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -38,6 +41,16 @@ const MarketplaceRoute = MarketplaceRouteImport.update({
   path: '/marketplace',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LostFoundRoute = LostFoundRouteImport.update({
+  id: '/lost-found',
+  path: '/lost-found',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsRoute = JobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
   path: '/health',
@@ -51,6 +64,11 @@ const GovRoute = GovRouteImport.update({
 const ForumRoute = ForumRouteImport.update({
   id: '/forum',
   path: '/forum',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EducationRoute = EducationRouteImport.update({
@@ -95,9 +113,12 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRouteWithChildren
   '/education': typeof EducationRoute
+  '/events': typeof EventsRoute
   '/forum': typeof ForumRoute
   '/gov': typeof GovRoute
   '/health': typeof HealthRoute
+  '/jobs': typeof JobsRoute
+  '/lost-found': typeof LostFoundRoute
   '/marketplace': typeof MarketplaceRoute
   '/profile': typeof ProfileRoute
   '/services': typeof ServicesRoute
@@ -109,9 +130,12 @@ export interface FileRoutesByTo {
   '/announcements': typeof AnnouncementsRoute
   '/auth': typeof AuthRoute
   '/education': typeof EducationRoute
+  '/events': typeof EventsRoute
   '/forum': typeof ForumRoute
   '/gov': typeof GovRoute
   '/health': typeof HealthRoute
+  '/jobs': typeof JobsRoute
+  '/lost-found': typeof LostFoundRoute
   '/marketplace': typeof MarketplaceRoute
   '/profile': typeof ProfileRoute
   '/services': typeof ServicesRoute
@@ -125,9 +149,12 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/chat': typeof ChatRouteWithChildren
   '/education': typeof EducationRoute
+  '/events': typeof EventsRoute
   '/forum': typeof ForumRoute
   '/gov': typeof GovRoute
   '/health': typeof HealthRoute
+  '/jobs': typeof JobsRoute
+  '/lost-found': typeof LostFoundRoute
   '/marketplace': typeof MarketplaceRoute
   '/profile': typeof ProfileRoute
   '/services': typeof ServicesRoute
@@ -142,9 +169,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/chat'
     | '/education'
+    | '/events'
     | '/forum'
     | '/gov'
     | '/health'
+    | '/jobs'
+    | '/lost-found'
     | '/marketplace'
     | '/profile'
     | '/services'
@@ -156,9 +186,12 @@ export interface FileRouteTypes {
     | '/announcements'
     | '/auth'
     | '/education'
+    | '/events'
     | '/forum'
     | '/gov'
     | '/health'
+    | '/jobs'
+    | '/lost-found'
     | '/marketplace'
     | '/profile'
     | '/services'
@@ -171,9 +204,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/chat'
     | '/education'
+    | '/events'
     | '/forum'
     | '/gov'
     | '/health'
+    | '/jobs'
+    | '/lost-found'
     | '/marketplace'
     | '/profile'
     | '/services'
@@ -187,9 +223,12 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ChatRoute: typeof ChatRouteWithChildren
   EducationRoute: typeof EducationRoute
+  EventsRoute: typeof EventsRoute
   ForumRoute: typeof ForumRoute
   GovRoute: typeof GovRoute
   HealthRoute: typeof HealthRoute
+  JobsRoute: typeof JobsRoute
+  LostFoundRoute: typeof LostFoundRoute
   MarketplaceRoute: typeof MarketplaceRoute
   ProfileRoute: typeof ProfileRoute
   ServicesRoute: typeof ServicesRoute
@@ -218,6 +257,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketplaceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lost-found': {
+      id: '/lost-found'
+      path: '/lost-found'
+      fullPath: '/lost-found'
+      preLoaderRoute: typeof LostFoundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs': {
+      id: '/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof JobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/health': {
       id: '/health'
       path: '/health'
@@ -237,6 +290,13 @@ declare module '@tanstack/react-router' {
       path: '/forum'
       fullPath: '/forum'
       preLoaderRoute: typeof ForumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/education': {
@@ -309,9 +369,12 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ChatRoute: ChatRouteWithChildren,
   EducationRoute: EducationRoute,
+  EventsRoute: EventsRoute,
   ForumRoute: ForumRoute,
   GovRoute: GovRoute,
   HealthRoute: HealthRoute,
+  JobsRoute: JobsRoute,
+  LostFoundRoute: LostFoundRoute,
   MarketplaceRoute: MarketplaceRoute,
   ProfileRoute: ProfileRoute,
   ServicesRoute: ServicesRoute,
