@@ -138,12 +138,13 @@ function HomePage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("products")
-        .select("id,title,price,image_url,created_at")
+        .select("id,title,price,unit,images,created_at")
         .order("created_at", { ascending: false })
         .limit(6);
       return data ?? [];
     },
   });
+
 
 
   const tipOfDay = useMemo(() => {
