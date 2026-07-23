@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import {
   Megaphone, ShoppingBasket, Wrench, Landmark, HeartPulse,
-  Users, Calendar, ChevronRight, Clock, Phone, Flame, Shield, Ambulance,
-  Sparkles, Moon, ExternalLink, Lightbulb, UserPlus, TrendingUp,
+  Users, ChevronRight, Clock, Phone, Flame, Shield, Ambulance,
+  Sparkles, Moon, ExternalLink, Lightbulb, TrendingUp, Wheat, Activity, Quote, Calendar,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
