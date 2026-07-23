@@ -353,58 +353,95 @@ function HomePage() {
         </div>
       </section>
 
-      {/* NEW MEMBERS */}
+      {/* MARKETPLACE CAROUSEL */}
+      <section className="px-4 lg:px-6 mt-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-display text-lg font-bold flex items-center gap-2">
+            <ShoppingBasket className="h-5 w-5 text-secondary-foreground" /> Yangi bozorda
+          </h2>
+          <Link to="/marketplace" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+            Barchasi <ChevronRight className="h-4 w-4" />
+          </Link>
+        </div>
+        {marketPreview && marketPreview.length > 0 ? (
+          <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 lg:mx-0 lg:px-0 snap-x">
+            {marketPreview.map((p) => (
+              <Link
+                key={p.id}
+                to="/marketplace"
+                className="card-hover shrink-0 w-40 snap-start rounded-2xl border border-border bg-card overflow-hidden"
+              >
+                <div className="h-28 w-full bg-gradient-to-br from-secondary/30 to-primary/10 grid place-items-center overflow-hidden">
+                  {p.images?.[0] ? (
+                    <img src={p.images[0]} alt={p.title} className="h-full w-full object-cover" />
+                  ) : (
+                    <ShoppingBasket className="h-8 w-8 text-secondary-foreground/60" />
+                  )}
+                </div>
+                <div className="p-2.5">
+                  <p className="text-xs font-medium truncate">{p.title}</p>
+                  <p className="text-[11px] text-primary font-bold mt-1">
+                    {p.price ? `${Number(p.price).toLocaleString("uz-UZ")} so'm${p.unit ? "/" + p.unit : ""}` : "Kelishiladi"}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <Card className="p-4 text-sm text-muted-foreground text-center">Hozircha mahsulotlar yo'q</Card>
+        )}
+      </section>
+
+      {/* AGRICULTURAL PRICES */}
       <section className="px-4 lg:px-6 mt-8">
         <h2 className="font-display text-lg font-bold mb-3 flex items-center gap-2">
-          <UserPlus className="h-5 w-5 text-success" /> Yangi a'zolar
+          <Wheat className="h-5 w-5 text-accent" /> Bugungi dehqon narxlari
+          <span className="text-[10px] font-normal text-muted-foreground">(taxminiy, so'm/kg)</span>
         </h2>
-        <Card className="p-4">
-          {newMembers && newMembers.length > 0 ? (
-            <ul className="flex flex-wrap gap-4">
-              {newMembers.map((m) => {
-                const name = [m.first_name, m.last_name].filter(Boolean).join(" ") || "Foydalanuvchi";
-                const init = name.split(" ").map((s) => s[0]?.toUpperCase() ?? "").slice(0, 2).join("");
-                return (
-                  <li key={m.id} className="flex flex-col items-center gap-1 w-16">
-                    {m.avatar_url ? (
-                      <img src={m.avatar_url} alt={name} className="h-12 w-12 rounded-full object-cover" />
-                    ) : (
-                      <div className="h-12 w-12 rounded-full bg-primary/15 text-primary grid place-items-center text-sm font-bold">
-                        {init}
-                      </div>
-                    )}
-                    <p className="text-[11px] text-center truncate w-full">{name.split(" ")[0]}</p>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <p className="text-sm text-muted-foreground text-center">Hozircha a'zolar yo'q</p>
-          )}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { name: "Bug'doy", price: 4200, trend: 1.2, emoji: "🌾" },
+            { name: "Kartoshka", price: 5500, trend: -0.8, emoji: "🥔" },
+            { name: "Piyoz", price: 3800, trend: 2.1, emoji: "🧅" },
+            { name: "Sabzi", price: 4900, trend: 0.4, emoji: "🥕" },
+            { name: "Pomidor", price: 8500, trend: -1.5, emoji: "🍅" },
+            { name: "Bodring", price: 7200, trend: 0.9, emoji: "🥒" },
+            { name: "Olma", price: 9800, trend: -0.3, emoji: "🍎" },
+            { name: "Uzum", price: 15000, trend: 3.2, emoji: "🍇" },
+          ].map((item) => (
+            <Card key={item.name} className="p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-2xl">{item.emoji}</span>
+                <span className={`text-[10px] font-bold ${item.trend >= 0 ? "text-success" : "text-destructive"}`}>
+                  {item.trend >= 0 ? "▲" : "▼"} {Math.abs(item.trend)}%
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">{item.name}</p>
+              <p className="font-display font-extrabold text-sm">{item.price.toLocaleString("uz-UZ")}</p>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* INSPIRATIONAL QUOTE */}
+      <section className="px-4 lg:px-6 mt-8 mb-8">
+        <Card className="relative overflow-hidden p-6 bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 border-primary/20">
+          <Quote className="absolute -top-2 -left-2 h-24 w-24 text-primary/10 rotate-12" aria-hidden />
+          <div className="relative flex items-start gap-4">
+            <div className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/15 text-primary shrink-0">
+              <Activity className="h-6 w-6" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs uppercase tracking-widest text-primary font-bold">Bugungi hikmat</p>
+              <p className="font-display text-lg sm:text-xl font-bold mt-2 text-balance leading-snug">
+                "Qo'shni qo'shnining tomiga qaraydi — ammo baraka o'z uyingda."
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">— O'zbek xalq maqoli</p>
+            </div>
+          </div>
         </Card>
       </section>
 
-      {/* EVENTS / TIPS */}
-      <section className="px-4 lg:px-6 mt-8 mb-8">
-        <div className="grid gap-3 md:grid-cols-2">
-          <Card className="p-5 border-l-4 border-l-accent">
-            <Calendar className="h-5 w-5 text-accent mb-2" />
-            <p className="font-display font-bold">Tadbirlar takvimi</p>
-            <p className="text-sm text-muted-foreground mt-1">Yaqinlashayotgan to'ylar, bayramlar va mahalla uchrashuvlarini kuzating.</p>
-            <Link to="/announcements" className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline">
-              Takvimni ochish <ChevronRight className="h-4 w-4" />
-            </Link>
-          </Card>
-          <Card className="p-5 border-l-4 border-l-primary">
-            <Users className="h-5 w-5 text-primary mb-2" />
-            <p className="font-display font-bold">Jamoa forumi</p>
-            <p className="text-sm text-muted-foreground mt-1">Qishloqdoshlar bilan muhokamalarga qo'shiling, savol bering va yordam bering.</p>
-            <Link to="/forum" className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-              Forumga o'tish <ChevronRight className="h-4 w-4" />
-            </Link>
-          </Card>
-        </div>
-      </section>
 
 
     </AppLayout>
