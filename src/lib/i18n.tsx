@@ -17,6 +17,9 @@ const DICT: Dict = {
   "nav.profile": { uz: "Profil", ru: "Профиль", en: "Profile" },
   "nav.add": { uz: "Qo'shish", ru: "Добавить", en: "Add" },
   "nav.chat": { uz: "Chat", ru: "Чат", en: "Chat" },
+  "nav.events": { uz: "Tadbirlar", ru: "События", en: "Events" },
+  "nav.jobs": { uz: "Ish o'rinlari", ru: "Вакансии", en: "Jobs" },
+  "nav.lostfound": { uz: "Yo'qolgan/Topilgan", ru: "Находки", en: "Lost & Found" },
 
   // Common
   "common.search": { uz: "Qidirish...", ru: "Поиск...", en: "Search..." },
