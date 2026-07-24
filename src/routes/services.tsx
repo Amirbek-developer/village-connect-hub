@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { cn } from "@/lib/utils";
 
 const SERVICE_CATEGORIES = [
   "Qurilish va ta'mirlash", "Transport", "Tibbiyot", "Ta'lim",
