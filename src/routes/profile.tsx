@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   LogOut, ShieldCheck, MapPin, Save, Camera, ChevronRight,
-  UserCircle2, Lock, Bell, Database, Settings as SettingsIcon, ArrowLeft,
+  UserCircle2, Lock, Bell, Database, Settings as SettingsIcon, ArrowLeft, HelpCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
