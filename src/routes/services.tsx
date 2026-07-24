@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Wrench, Plus, Star, Phone, ShieldCheck } from "lucide-react";
+import { Wrench, Plus, Star, Phone, ShieldCheck, Hammer, Zap, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { AppLayout, PageHeader } from "@/components/layout/AppLayout";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { cn } from "@/lib/utils";
 
 const SERVICE_CATEGORIES = [
   "Qurilish va ta'mirlash", "Transport", "Tibbiyot", "Ta'lim",
@@ -54,6 +55,32 @@ function ServicesPage() {
       />
 
       <div className="px-4 lg:px-6 space-y-4">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+          {[
+            { label: "Usta topish", icon: Hammer, value: "all", color: "bg-primary/10 text-primary" },
+            { label: "Elektrik", icon: Zap, value: "Qurilish va ta'mirlash", color: "bg-secondary/20 text-secondary-foreground" },
+            { label: "Buyurtma berish", icon: ShoppingBag, value: "Ovqat va qahvaxona", color: "bg-accent/15 text-accent" },
+          ].map((tile) => {
+            const Icon = tile.icon;
+            const active = cat === tile.value;
+            return (
+              <button
+                key={tile.label}
+                onClick={() => setCat(tile.value)}
+                className={cn(
+                  "flex flex-col items-center gap-2 rounded-2xl border p-3 sm:p-4 text-center transition card-hover",
+                  active ? "border-primary bg-primary/5" : "border-border bg-card"
+                )}
+              >
+                <span className={cn("grid h-11 w-11 place-items-center rounded-xl", tile.color)}>
+                  <Icon className="h-5 w-5" />
+                </span>
+                <span className="text-xs font-semibold leading-tight">{tile.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
         <Tabs value={cat} onValueChange={setCat}>
           <TabsList className="flex flex-wrap h-auto w-full sm:w-auto">
             <TabsTrigger value="all">Hammasi</TabsTrigger>
@@ -62,6 +89,7 @@ function ServicesPage() {
             ))}
           </TabsList>
         </Tabs>
+
 
         {isLoading ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
