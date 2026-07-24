@@ -29,7 +29,7 @@ export const Route = createFileRoute("/profile")({
   component: ProfilePage,
 });
 
-type Section = "home" | "account" | "privacy" | "notifications" | "data" | "settings";
+type Section = "home" | "account" | "privacy" | "notifications" | "data" | "settings" | "faq";
 
 function ProfilePage() {
   return (
