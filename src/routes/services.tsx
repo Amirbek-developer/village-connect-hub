@@ -1,7 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Wrench, Plus, Star, Phone, ShieldCheck, Hammer, Zap, ShoppingBag } from "lucide-react";
+import {
+  Wrench, Plus, Star, Phone, ShieldCheck, Hammer, Zap, ShoppingBag,
+  ShoppingBasket, Briefcase, SearchCheck, Landmark, HeartPulse, GraduationCap,
+  ChevronRight, ChevronDown,
+} from "lucide-react";
 import { toast } from "sonner";
 import { AppLayout, PageHeader } from "@/components/layout/AppLayout";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -11,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -27,83 +30,139 @@ const SERVICE_CATEGORIES = [
   "Go'zallik va sog'liq", "Ovqat va qahvaxona", "Moliya", "Qishloq xo'jaligi", "Boshqa",
 ];
 
+type SubKey = "usta" | "elektrik" | "buyurtma";
+
+const SUB_SERVICES: { key: SubKey; title: string; sub: string; icon: typeof Hammer; iconBg: string; category: string }[] = [
+  { key: "usta",     title: "Usta topish",     sub: "Qurilish, ta'mirlash, hunarmandlar",     icon: Hammer,     iconBg: "bg-primary",   category: "Qurilish va ta'mirlash" },
+  { key: "elektrik", title: "Elektrik",        sub: "Simlar, rozetkalar, LED yoritish",       icon: Zap,        iconBg: "bg-secondary", category: "Qurilish va ta'mirlash" },
+  { key: "buyurtma", title: "Buyurtma berish", sub: "Do'kon, choyxona, sartaroshxona",         icon: ShoppingBag,iconBg: "bg-accent",    category: "Ovqat va qahvaxona" },
+];
+
+const LINK_ROWS: { to: string; title: string; sub: string; icon: typeof ShoppingBasket; iconBg: string }[] = [
+  { to: "/marketplace", title: "Bozor",             sub: "Mahalliy mahsulotlar va xaridlar",   icon: ShoppingBasket, iconBg: "bg-primary" },
+  { to: "/jobs",        title: "Ish o'rinlari",     sub: "Vakansiyalar va ish qidiruvi",       icon: Briefcase,      iconBg: "bg-secondary" },
+  { to: "/lost-found",  title: "Yo'qolgan/Topilgan", sub: "Yo'qolgan va topilgan buyumlar",     icon: SearchCheck,    iconBg: "bg-accent" },
+  { to: "/gov",         title: "Davlat xizmatlari", sub: "Hokimlik va rasmiy xizmatlar",       icon: Landmark,       iconBg: "bg-success" },
+  { to: "/health",      title: "Sog'liq",           sub: "Shifoxona, dorixona, favqulodda",    icon: HeartPulse,     iconBg: "bg-destructive" },
+  { to: "/education",   title: "Ta'lim",            sub: "Maktab, kurslar, o'quv resurslar",   icon: GraduationCap,  iconBg: "bg-foreground/80" },
+];
+
 export const Route = createFileRoute("/services")({
   head: () => ({ meta: [{ title: "Xizmatlar — QishloqNet" }, { name: "description", content: "Mahalliy usta, hunarmand va xizmat ko'rsatuvchilarni toping." }] }),
   component: ServicesPage,
 });
 
 function ServicesPage() {
-  const [cat, setCat] = useState<string>("all");
+  const [openSub, setOpenSub] = useState<SubKey | null>(null);
 
+  return (
+    <AppLayout>
+      <PageHeader
+        title="Xizmatlar katalogi"
+        subtitle="Tasdiqlangan ustalar va boshqa bo'limlar"
+        action={<CreateServiceDialog />}
+      />
+
+      <div className="px-4 lg:px-6 pb-8 max-w-2xl mx-auto w-full space-y-5">
+        {/* Xizmatlar dropdown-style list */}
+        <Card className="overflow-hidden divide-y divide-border">
+          {SUB_SERVICES.map((r) => (
+            <SubServiceRow
+              key={r.key}
+              row={r}
+              open={openSub === r.key}
+              onToggle={() => setOpenSub(openSub === r.key ? null : r.key)}
+            />
+          ))}
+        </Card>
+
+        {/* Other sections (links) */}
+        <div>
+          <p className="px-1 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Boshqa bo'limlar
+          </p>
+          <Card className="overflow-hidden divide-y divide-border">
+            {LINK_ROWS.map((r) => {
+              const Icon = r.icon;
+              return (
+                <Link
+                  key={r.to}
+                  to={r.to}
+                  className="flex items-center gap-4 px-4 py-3.5 text-left hover:bg-muted/40 transition-colors"
+                >
+                  <div className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-white", r.iconBg)}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-[15px] leading-tight">{r.title}</p>
+                    <p className="text-xs text-muted-foreground truncate">{r.sub}</p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                </Link>
+              );
+            })}
+          </Card>
+        </div>
+      </div>
+    </AppLayout>
+  );
+}
+
+function SubServiceRow({
+  row, open, onToggle,
+}: {
+  row: typeof SUB_SERVICES[number];
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const Icon = row.icon;
   const { data: items = [], isLoading } = useQuery({
-    queryKey: ["services", cat],
+    queryKey: ["services", row.category],
+    enabled: open,
     queryFn: async () => {
-      let q = supabase.from("services").select("*").order("rating", { ascending: false }).order("created_at", { ascending: false });
-      if (cat !== "all") q = q.eq("category", cat);
-      const { data, error } = await q;
+      const { data, error } = await supabase
+        .from("services").select("*")
+        .eq("category", row.category)
+        .order("rating", { ascending: false })
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
   });
 
   return (
-    <AppLayout>
-      <PageHeader
-        title="Xizmatlar katalogi"
-        subtitle="Tasdiqlangan ustalar va xizmat ko'rsatuvchilar"
-        action={<CreateServiceDialog />}
-      />
-
-      <div className="px-4 lg:px-6 space-y-4">
-        <div className="grid grid-cols-3 gap-2 sm:gap-3">
-          {[
-            { label: "Usta topish", icon: Hammer, value: "all", color: "bg-primary/10 text-primary" },
-            { label: "Elektrik", icon: Zap, value: "Qurilish va ta'mirlash", color: "bg-secondary/20 text-secondary-foreground" },
-            { label: "Buyurtma berish", icon: ShoppingBag, value: "Ovqat va qahvaxona", color: "bg-accent/15 text-accent" },
-          ].map((tile) => {
-            const Icon = tile.icon;
-            const active = cat === tile.value;
-            return (
-              <button
-                key={tile.label}
-                onClick={() => setCat(tile.value)}
-                className={cn(
-                  "flex flex-col items-center gap-2 rounded-2xl border p-3 sm:p-4 text-center transition card-hover",
-                  active ? "border-primary bg-primary/5" : "border-border bg-card"
-                )}
-              >
-                <span className={cn("grid h-11 w-11 place-items-center rounded-xl", tile.color)}>
-                  <Icon className="h-5 w-5" />
-                </span>
-                <span className="text-xs font-semibold leading-tight">{tile.label}</span>
-              </button>
-            );
-          })}
+    <div>
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center gap-4 px-4 py-3.5 text-left hover:bg-muted/40 transition-colors"
+        aria-expanded={open}
+      >
+        <div className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-white", row.iconBg)}>
+          <Icon className="h-5 w-5" />
         </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold text-[15px] leading-tight">{row.title}</p>
+          <p className="text-xs text-muted-foreground truncate">{row.sub}</p>
+        </div>
+        <ChevronDown className={cn("h-4 w-4 text-muted-foreground shrink-0 transition-transform", open && "rotate-180")} />
+      </button>
 
-        <Tabs value={cat} onValueChange={setCat}>
-          <TabsList className="flex flex-wrap h-auto w-full sm:w-auto">
-            <TabsTrigger value="all">Hammasi</TabsTrigger>
-            {SERVICE_CATEGORIES.slice(0, 5).map((c) => (
-              <TabsTrigger key={c} value={c} className="text-[11px]">{c}</TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-
-
-        {isLoading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {Array.from({ length: 3 }).map((_, i) => <Card key={i} className="h-40 animate-pulse bg-muted/40" />)}
-          </div>
-        ) : items.length === 0 ? (
-          <EmptyState icon={Wrench} title="Xizmatlar yo'q" description="Ustaligingiz bormi? Birinchi bo'lib o'z xizmatingizni qo'shing." />
-        ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 pb-6">
-            {items.map((s) => <ServiceCard key={s.id} s={s} />)}
-          </div>
-        )}
-      </div>
-    </AppLayout>
+      {open && (
+        <div className="px-4 pb-4 pt-1 bg-muted/20">
+          {isLoading ? (
+            <div className="grid gap-2">
+              {Array.from({ length: 2 }).map((_, i) => <div key={i} className="h-24 animate-pulse rounded-lg bg-muted/50" />)}
+            </div>
+          ) : items.length === 0 ? (
+            <EmptyState icon={Wrench} title="Bu bo'limda xizmat yo'q" description="Birinchi bo'lib o'z xizmatingizni qo'shing." />
+          ) : (
+            <div className="grid sm:grid-cols-2 gap-3">
+              {items.map((s) => <ServiceCard key={s.id} s={s} />)}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -126,8 +185,8 @@ function ServiceCard({ s }: { s: any }) {
       <div className="mt-3 flex items-center justify-between text-xs">
         <span className="flex items-center gap-1">
           <Star className="h-3.5 w-3.5 text-secondary fill-secondary" />
-          <span className="font-semibold">{s.rating.toFixed(1)}</span>
-          <span className="text-muted-foreground">({s.review_count})</span>
+          <span className="font-semibold">{Number(s.rating ?? 0).toFixed(1)}</span>
+          <span className="text-muted-foreground">({s.review_count ?? 0})</span>
         </span>
         {s.experience_years && <span className="text-muted-foreground">{s.experience_years} yil tajriba</span>}
       </div>

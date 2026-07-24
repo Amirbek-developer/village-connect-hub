@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   LogOut, ShieldCheck, MapPin, Save, Camera, ChevronRight,
-  UserCircle2, Lock, Bell, Database, Settings as SettingsIcon, ArrowLeft,
+  UserCircle2, Lock, Bell, Database, Settings as SettingsIcon, ArrowLeft, HelpCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/profile")({
   component: ProfilePage,
 });
 
-type Section = "home" | "account" | "privacy" | "notifications" | "data" | "settings";
+type Section = "home" | "account" | "privacy" | "notifications" | "data" | "settings" | "faq";
 
 function ProfilePage() {
   return (
@@ -71,6 +71,7 @@ function ProfileBody() {
         {section === "notifications" && <NotificationsSection />}
         {section === "data" && <DataSection />}
         {section === "settings" && <SettingsSection />}
+        {section === "faq" && <FaqSection />}
       </div>
     );
   }
@@ -112,6 +113,7 @@ function ProfileHome({ profile, onOpen }: { profile: any; onOpen: (s: Section) =
     { id: "notifications", icon: Bell,          iconBg: "bg-accent",    title: "Bildirishnomalar",      sub: "Tovush, e'lonlar, xabarlar" },
     { id: "data",          icon: Database,      iconBg: "bg-secondary", title: "Ma'lumot va xotira",    sub: "Media yuklab olish, kesh" },
     { id: "settings",      icon: SettingsIcon,  iconBg: "bg-foreground/80", title: "Sozlamalar",        sub: "Til, mavzu, ilova haqida" },
+    { id: "faq",           icon: HelpCircle,    iconBg: "bg-primary/80", title: "FAQ",                    sub: "Ko'p so'raladigan savollar" },
   ];
 
   return (
@@ -352,6 +354,54 @@ function SettingsSection() {
         <p className="text-sm font-semibold">QishloqNet</p>
         <p className="text-xs text-muted-foreground">Versiya 1.0.0 — Jamoa platformasi</p>
         <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} QishloqNet jamoasi</p>
+      </div>
+    </Card>
+  );
+}
+
+/* ------------- FAQ ------------- */
+const FAQS: { q: string; a: string }[] = [
+  { q: "QishloqNet nima?", a: "QishloqNet — qishloq va kichik shahar aholisi uchun jamoat platformasi: e'lonlar, bozor, xizmatlar, davlat murojaatlari va chat bir joyda." },
+  { q: "Ro'yxatdan qanday o'taman?", a: "Telefon raqamingiz va parol bilan bir necha soniyada. SMS kod kerak emas — keyingi safar faqat parol so'raladi." },
+  { q: "Xizmatimni qanday qo'shaman?", a: "Xizmatlar bo'limiga kirib, o'ng yuqoridagi 'Xizmat qo'sh' tugmasini bosing va ma'lumotlarni to'ldiring." },
+  { q: "Chatda rasm yoki fayl yuborsam bo'ladimi?", a: "Ha. Chatdagi biriktirish tugmasi orqali rasm, fayl va media yuborishingiz mumkin." },
+  { q: "Ma'lumotlarim xavfsizmi?", a: "Ha. Barcha shaxsiy ma'lumotlar shifrlangan holda saqlanadi va faqat siz ruxsat bergan foydalanuvchilarga ko'rinadi." },
+  { q: "Ilova bepulmi?", a: "Ha, QishloqNet aholi uchun butunlay bepul." },
+  { q: "Xato yoki taklif bo'lsa nima qilaman?", a: "Profil → Bildirishnomalar orqali biz bilan bog'laning yoki forum bo'limida yozib qoldiring." },
+];
+
+function FaqSection() {
+  const [open, setOpen] = useState<number | null>(0);
+  return (
+    <Card className="p-6 space-y-3">
+      <div>
+        <h2 className="font-display font-extrabold text-xl">FAQ</h2>
+        <p className="text-sm text-muted-foreground">Ko'p so'raladigan savollar</p>
+      </div>
+      <div className="divide-y divide-border rounded-lg border border-border overflow-hidden">
+        {FAQS.map((item, i) => {
+          const isOpen = open === i;
+          return (
+            <div key={i}>
+              <button
+                onClick={() => setOpen(isOpen ? null : i)}
+                className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/40 transition-colors"
+                aria-expanded={isOpen}
+              >
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary text-xs font-bold">
+                  {i + 1}
+                </span>
+                <span className="flex-1 text-sm font-semibold">{item.q}</span>
+                <ChevronRight className={cn("h-4 w-4 text-muted-foreground shrink-0 transition-transform", isOpen && "rotate-90")} />
+              </button>
+              {isOpen && (
+                <div className="px-4 pb-4 pt-0 text-sm text-muted-foreground leading-relaxed">
+                  {item.a}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </Card>
   );
