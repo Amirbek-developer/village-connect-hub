@@ -113,6 +113,7 @@ function ProfileHome({ profile, onOpen }: { profile: any; onOpen: (s: Section) =
     { id: "notifications", icon: Bell,          iconBg: "bg-accent",    title: "Bildirishnomalar",      sub: "Tovush, e'lonlar, xabarlar" },
     { id: "data",          icon: Database,      iconBg: "bg-secondary", title: "Ma'lumot va xotira",    sub: "Media yuklab olish, kesh" },
     { id: "settings",      icon: SettingsIcon,  iconBg: "bg-foreground/80", title: "Sozlamalar",        sub: "Til, mavzu, ilova haqida" },
+    { id: "faq",           icon: HelpCircle,    iconBg: "bg-primary/80", title: "FAQ",                    sub: "Ko'p so'raladigan savollar" },
   ];
 
   return (
