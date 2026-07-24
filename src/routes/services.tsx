@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Wrench, Plus, Star, Phone, ShieldCheck } from "lucide-react";
+import { Wrench, Plus, Star, Phone, ShieldCheck, Hammer, Zap, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { AppLayout, PageHeader } from "@/components/layout/AppLayout";
 import { EmptyState } from "@/components/shared/EmptyState";
