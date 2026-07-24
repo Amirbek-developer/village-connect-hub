@@ -71,6 +71,7 @@ function ProfileBody() {
         {section === "notifications" && <NotificationsSection />}
         {section === "data" && <DataSection />}
         {section === "settings" && <SettingsSection />}
+        {section === "faq" && <FaqSection />}
       </div>
     );
   }
