@@ -1,8 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  Home, Megaphone, ShoppingBasket, Wrench, Landmark,
-  HeartPulse, GraduationCap, MessagesSquare, User as UserIcon,
-  Calendar, Briefcase, SearchCheck,
+  Home, Megaphone, Wrench, MessagesSquare, User as UserIcon, Calendar,
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -10,14 +8,8 @@ import { cn } from "@/lib/utils";
 export const NAV_ITEMS = [
   { to: "/", icon: Home, key: "nav.home" },
   { to: "/events", icon: Calendar, key: "nav.events" },
-  { to: "/jobs", icon: Briefcase, key: "nav.jobs" },
-  { to: "/lost-found", icon: SearchCheck, key: "nav.lostfound" },
   { to: "/announcements", icon: Megaphone, key: "nav.announcements" },
-  { to: "/marketplace", icon: ShoppingBasket, key: "nav.marketplace" },
   { to: "/services", icon: Wrench, key: "nav.services" },
-  { to: "/gov", icon: Landmark, key: "nav.gov" },
-  { to: "/health", icon: HeartPulse, key: "nav.health" },
-  { to: "/education", icon: GraduationCap, key: "nav.education" },
   { to: "/forum", icon: MessagesSquare, key: "nav.forum" },
   { to: "/profile", icon: UserIcon, key: "nav.profile" },
 ] as const;
